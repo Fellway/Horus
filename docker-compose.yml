@@ -1,0 +1,35 @@
+version: "2.0"
+services:
+  horus:
+    container_name: horus
+    build:
+      context: .
+      dockerfile: ./docker/horus/Dockerfile
+    ports:
+    - 127.0.0.1:8080:8080
+  sqlmap:
+    container_name: sqlmap
+    links:
+      - horus
+      - dvwa
+    build:
+      context: ""
+      dockerfile: ./docker/sqlmap/Dockerfile
+    ports:
+      - 127.0.0.1:8775:8775
+  dvwa:
+    container_name: dvwa
+    links:
+      - horus
+    image: vulnerables/web-dvwa
+    ports:
+      - 127.0.0.1:80:80
+  frontend:
+    container_name: frontend
+    links:
+      - horus
+    build:
+      context: ""
+      dockerfile: ./docker/frontend/Dockerfile
+    ports:
+    - 127.0.0.1:3000:3000
